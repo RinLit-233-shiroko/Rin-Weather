@@ -1,0 +1,16 @@
+Module RinWeather
+
+singleton TimeColorUtil 1.0 utils/TimeColorUtil.qml
+
+DynamicBackground 1.0 components/DynamicBackground.qml
+WeatherClip 1.0 components/WeatherClip.qml
+AQI_ProgressBar 1.0 components/AQI_ProgressBar.qml
+UVI_ProgressBar 1.0 components/UVI_ProgressBar.qml
+
+ForecastModel 1.0 components/contents/ForecastModel.qml
+ForecastModelExpanded 1.0 components/contents/ForecastModelExpanded.qml
+AQI_Model 1.0 components/contents/AQI_Model.qml
+UVI_Model 1.0 components/contents/UVI_Model.qml
+
+AQI_Dialog 1.0 components/dialog/AQI_Dialog.qml
+UVI_Dialog 1.0 components/dialog/UVI_Dialog.qml
