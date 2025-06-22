@@ -1,22 +1,6 @@
-from datetime import datetime, timedelta, timezone, tzinfo
+from datetime import datetime, timezone
+from .timezone import parse_timezone_abbr
 import platform
-import re
-
-
-def parse_timezone_abbr(tz_abbr: str) -> timezone | tzinfo | None:
-    """
-    简单解析类似 GMT+8 的时区缩写，返回对应 timezone 对象
-    不支持复杂时区名称，只针对 GMT±数字 格式
-    """
-    match = re.match(r"GMT([+-])(\d+)", tz_abbr)
-    if match:
-        sign, hours = match.groups()
-        offset_hours = int(hours)
-        if sign == '-':
-            offset_hours = -offset_hours
-        return timezone(timedelta(hours=offset_hours))
-    # 默认返回本地时区（无偏移）
-    return datetime.now().astimezone().tzinfo
 
 
 def parse_hourly_data(hourly: dict, units: dict = None, timezone_abbreviation: str = None) -> list:
@@ -50,6 +34,7 @@ def parse_hourly_data(hourly: dict, units: dict = None, timezone_abbreviation: s
             "time_obj": local_time,
             "code": hourly["weathercode"][i],
             "temperature": round(hourly["temperature_2m"][i]),
+            "apparent_temperature": round(hourly["apparent_temperature"][i]),
             "precipitation": round(hourly.get("precipitation", [0])[i], 1)
         })
 
@@ -62,52 +47,17 @@ def parse_hourly_data(hourly: dict, units: dict = None, timezone_abbreviation: s
         hour_label = "<b>Now</b>" if is_now else t.strftime(time_format)
 
         precip_val = entry["precipitation"]
-        precip_str = None if precip_val == 0 else f"{precip_val}{units.get('precipitation', '')}"  # 降水
+        precip_str = None if precip_val == 0 else f"{precip_val} {units.get('precipitation', '')}"  # 降水
 
         result.append({
             "time": hour_label,
             "code": entry["code"],
             "temperature": f"{entry['temperature']}",  # 单位 {units.get('temperature_2m', '')}
+            "apparent_temperature": f"{entry['apparent_temperature']}",
             "precipitation": f"{precip_str}"
         })
 
     return result
-
-
-def get_current_aqi(hourly: dict, aqis: dict, timezone_abbreviation: str = None) -> float:
-    """
-    从 hourly 数据中获取当前本地小时的 AQI 值
-    """
-    # 解析时区
-    tz = parse_timezone_abbr(timezone_abbreviation) if timezone_abbreviation else datetime.now().astimezone().tzinfo
-
-    now_local = datetime.now(tz).replace(minute=0, second=0, microsecond=0)
-    now_str = now_local.strftime("%Y-%m-%dT%H:%M")
-
-    try:
-        index = hourly["time"].index(now_str)
-        aqi = aqis[index]
-        return round(aqi, 1)
-    except (ValueError, KeyError, IndexError):
-        return -1  # 未找到对应时间
-
-
-def get_current_uvi(hourly: dict, timezone_abbreviation: str = None) -> float:
-    """
-    从 hourly 数据中获取当前本地小时的 UVI 值
-    """
-    # 解析时区
-    tz = parse_timezone_abbr(timezone_abbreviation) if timezone_abbreviation else datetime.now().astimezone().tzinfo
-
-    now_local = datetime.now(tz).replace(minute=0, second=0, microsecond=0)
-    now_str = now_local.strftime("%Y-%m-%dT%H:%M")
-
-    try:
-        index = hourly["time"].index(now_str)
-        uvi = hourly["uv_index"][index]
-        return round(uvi, 1)
-    except (ValueError, KeyError, IndexError):
-        return -1  # 未找到对应时间
 
 
 def parse_daily_data(daily: dict, units: dict = None) -> list:
@@ -128,13 +78,14 @@ def parse_daily_data(daily: dict, units: dict = None) -> list:
         precipitation = daily["precipitation_sum"][i]
 
         precipitation_str = None if precipitation == 0 \
-            else f"{round(precipitation, 1)}{units.get('precipitation_sum', '')}"
+            else f"{round(precipitation, 1)} {units.get('precipitation_sum', '')}"
 
         result.append({
             "time": datetime.strptime(date_str, "%Y-%m-%d").strftime("%A"),
             "code": code,
             "h_temp": f"{h_temp}",
             "l_temp": f"{l_temp}",
+            "temperature": f"{round((h_temp + l_temp) / 2)}",
             "precipitation": precipitation_str
         })
 

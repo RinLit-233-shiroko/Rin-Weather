@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import RinUI
+import RinWeather
 
 
 Flickable {
@@ -35,17 +36,17 @@ Flickable {
             //     },
             // ]
             // js generated example
-            model: {
-                let example = [];
-                for (let i = 0; i < 12; i++) {
-                    example.push({
-                        time: i+"AM",
-                        code: 0,
-                        temperature: 28,
-                    });
-                }
-                return example;
-            }
+            model: {}
+            //     let example = [];
+            //     for (let i = 0; i < 12; i++) {
+            //         example.push({
+            //             time: i+"AM",
+            //             code: 0,
+            //             temperature: 28,
+            //         });
+            //     }
+            //     return example;
+            // }
 
             delegate: ColumnLayout {
                 Layout.preferredWidth: 48
@@ -53,6 +54,7 @@ Flickable {
 
                 Text {
                     typography: Typography.Caption
+                    color: Colors.dark.textColor
                     Layout.alignment: Qt.AlignHCenter
                     text: modelData.time
                 }
@@ -61,13 +63,14 @@ Flickable {
                     Layout.preferredHeight: 48
                     spacing: 0
                     Image {
+                        Layout.alignment: Qt.AlignHCenter
                         Layout.preferredWidth: 32
                         Layout.preferredHeight: 26
                         source: WeatherResource.getWeatherImage(modelData.code)
                         fillMode: Image.PreserveAspectFit
                     }
                     Text {
-                        color: "#85a8c6"
+                        color: RinColor.precipitationColor
                         font.bold: true
                         typography: Typography.Caption
                         text: modelData.precipitation
@@ -82,6 +85,7 @@ Flickable {
                 }
                 Text {
                     typography: Typography.BodyStrong
+                    color: Colors.dark.textColor
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
                     text: modelData.temperature + "°"
                 }

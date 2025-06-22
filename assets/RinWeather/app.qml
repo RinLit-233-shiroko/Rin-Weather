@@ -17,7 +17,18 @@ FluentWindow {
             icon: "ic_fluent_weather_rain_showers_day_20_regular",
             page: Qt.resolvedUrl("pages/weather.qml"),
         },
+        {
+            title: "Cities",
+            icon: "ic_fluent_globe_location_20_regular",
+            page: Qt.resolvedUrl("pages/cities.qml"),
+        },
+        {
+            title: "Settings",
+            icon: "ic_fluent_settings_20_regular",
+            page: Qt.resolvedUrl("pages/settings.qml"),
+        },
     ]
 
-    // navigationView.navigationBar.collapsed = true
+    navigationView.navigationBar.minimumExpandWidth: width + 1
+    navigationView.navigationBar.collapsed: true
 }

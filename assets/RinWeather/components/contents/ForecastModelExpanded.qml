@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import RinUI
+import RinWeather
 
 Flickable {
     id: forecastModel
@@ -22,18 +23,18 @@ Flickable {
         Repeater {
             id: rpt
 
-            model: {
-                let example = [];
-                for (let i = 0; i < 7; i++) {
-                    example.push({
-                        time: i,
-                        code: 0,
-                        h_temp: 22 + i,
-                        l_temp: 20 + i,
-                    });
-                }
-                return example;
-            }
+            model: {}
+            //     let example = [];
+            //     for (let i = 0; i < 7; i++) {
+            //         example.push({
+            //             time: i,
+            //             code: 0,
+            //             h_temp: 22 + i,
+            //             l_temp: 20 + i,
+            //         });
+            //     }
+            //     return example;
+            // }
 
             delegate: RowLayout {
                 Layout.preferredHeight: 36
@@ -42,6 +43,7 @@ Flickable {
 
                 Text {
                     Layout.preferredWidth: 50
+                    color: Colors.dark.textColor
                     typography: Typography.Body
                     Layout.alignment: Qt.AlignHCenter
                     text: modelData.time
@@ -54,14 +56,14 @@ Flickable {
                     Layout.preferredHeight: 28
                     spacing: 0
                     Image {
-                        Layout.alignment: Qt.AlignHCenter
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
                         Layout.preferredWidth: 32
                         Layout.preferredHeight: 24
                         source: WeatherResource.getWeatherImage(modelData.code)
                         fillMode: Image.PreserveAspectFit
                     }
                     Text {
-                        color: "#85a8c6"
+                        color: RinColor.precipitationColor
                         font.bold: true
                         Layout.alignment: Qt.AlignHCenter
                         typography: Typography.Caption
@@ -86,7 +88,7 @@ Flickable {
 
                     Text {
                         typography: Typography.BodyStrong
-                        color: Colors.proxy.textSecondaryColor
+                        color: Colors.dark.textSecondaryColor
                         text: modelData.l_temp + "°"
                     }
 
@@ -109,11 +111,12 @@ Flickable {
                             width: barBg.width * (barBg.endRatio - barBg.startRatio)
                             height: parent.height
                             radius: parent.radius
-                            color: "orange"
+                            gradient: RinColor.temperatureGradient
                         }
                     }
 
                     Text {
+                        color: Colors.dark.textColor
                         typography: Typography.BodyStrong
                         text: modelData.h_temp + "°"
                     }

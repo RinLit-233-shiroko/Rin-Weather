@@ -10,6 +10,10 @@ Clip {
 
     default property alias content: contentsArea.data
 
+    // dark style
+    color: Colors.dark.controlFillSecondaryColor
+    borderColor: Colors.dark.cardBorderColor
+
     Layout.fillWidth: true
     implicitWidth: 200
     implicitHeight: 150
@@ -24,13 +28,13 @@ Clip {
             IconWidget {
                 id: iconLabel
                 size: 18
-                color: Colors.proxy.textSecondaryColor
+                color: Colors.dark.textSecondaryColor
                 icon: root.icon.name
             }
             Text {
                 id: titleLabel
                 typography: Typography.Caption
-                color: Colors.proxy.textSecondaryColor
+                color: Colors.dark.textSecondaryColor
                 text: root.text
             }
         }

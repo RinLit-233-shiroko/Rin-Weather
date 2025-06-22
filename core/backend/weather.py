@@ -1,13 +1,11 @@
-import json
 import requests
 from typing import Optional, Dict, Any
-from core import rw_config, DEFAULT_CONFIG
+from core import DEFAULT_CONFIG
 import core.backend.parser as parser
 from loguru import logger
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from PySide6.QtCore import QObject, Slot, QDateTime, QTimer, Signal, QThread
-
 
 proxies = {
     "http": None,
@@ -16,29 +14,58 @@ proxies = {
 
 
 class WeatherRequester:
-    def __init__(self, location: Optional[Dict[str, Any]] = None, config: Optional[Dict[str, Any]] = None):
+    """
+    天气请求
+    """
+
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        """
+        初始化请求
+        :param location:
+        :param config:
+        """
         super().__init__()
-        self.config = config or rw_config or DEFAULT_CONFIG
+        self.config = config or DEFAULT_CONFIG
+        self.current_city = self.config["weather"]["current_city"] \
+            if self.config["weather"]["current_city"] <= len(self.config["weather"]["cities"]) else 0
 
-        if not location:
-            self.city_config = {
-                "city_name": self.config["weather"]["cities"][0]["name"],
-                "latitude": self.config["weather"]["cities"][0]["latitude"],
-                "longitude": self.config["weather"]["cities"][0]["longitude"]
-            }
-        else:
-            self.city_config = location
+        self.city_config = {
+            "name": self.config["weather"]["cities"][self.current_city]["name"],
+            "latitude": self.config["weather"]["cities"][self.current_city]["latitude"],
+            "longitude": self.config["weather"]["cities"][self.current_city]["longitude"]
+        }
 
+        # units
         self.temp_unit = self.config["weather"]["temp_unit"]  # 单位
         self.windspeed_unit = self.config["weather"]["windspeed_unit"]
         self.precipitation_unit = self.config["weather"]["precipitation_unit"]
 
+        # API URL
         self.base_url = "https://api.open-meteo.com/v1/forecast"
         self.aqi_url = "https://air-quality-api.open-meteo.com/v1/air-quality"
         self.result = {}
         self.date = None
 
-    def fetch_weather(self) -> Optional[Dict[str, Any]]:
+        # 缓存
+        self.cache_expiration = (timedelta(minutes=self.config["network"].get("cache_expiration"))
+                                 or timedelta(minutes=10))
+        self.last_fetch_time = None
+        self.last_location = None
+        self.cache = {}
+
+    def set_location(self, location: Dict[str, Any]):
+        self.city_config = location
+
+    def fetch_weather(self):
+        loc = f"{self.city_config['latitude']},{self.city_config['longitude']}"
+        now = datetime.now()
+
+        if loc in self.cache:
+            cache_entry = self.cache[loc]
+            if now - cache_entry["timestamp"] < self.cache_expiration:
+                logger.info(f"Returning cached: {loc}")
+                return cache_entry["data"]
+
         params = {
             "latitude": self.city_config["latitude"],  # 纬度
             "longitude": self.city_config["longitude"], "current_weather": True,  # 经度
@@ -54,7 +81,7 @@ class WeatherRequester:
             "forecast_days": 7,
             "daily": ",".join([
                 "temperature_2m_max", "temperature_2m_min", "weathercode",
-                "precipitation_sum", "sunrise", "sunset"  # 日升日落时间
+                "precipitation_sum", "sunrise", "sunset",  # 日升日落时间
             ])
 
         }
@@ -74,13 +101,25 @@ class WeatherRequester:
             print("AQI请求URL:", aqi_res.url)
             res.raise_for_status()
             aqi_res.raise_for_status()
-            return self.parse_weather(res.json(), aqi_res.json())
-        except requests.exceptions.Timeout:
+
+            result = self.parse_weather(res.json(), aqi_res.json())
+
+            # cache update
+            self.cache[loc] = {
+                "data": result,
+                "timestamp": now
+            }
+
+            return result
+        except requests.exceptions.Timeout as e:
             logger.error("请求超时，请检查网络连接")
-            return None
+            return e
         except requests.RequestException as e:
             logger.error(f"请求失败：{e}")
-            return None
+            return e
+        except Exception as e:
+            logger.error(f"未知错误：{e}")
+            return e
 
     def parse_weather(self, data: Dict[str, Any], aqi_data: Dict[str, Any]) -> Dict[str, Any]:
         self.date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -92,34 +131,39 @@ class WeatherRequester:
 
 class WeatherManager(QObject):
     weatherUpdated = Signal()
+    weatherUpdatedFailed = Signal(str)
+    refreshRequested = Signal()  # 添加一个信号用于跨线程触发
 
-    def __init__(self, parent=None):
+    def __init__(self, config: Optional = None, parent=None):
         super().__init__(parent)
-        self.requester = WeatherRequester()
         self.weather_data = None
+        self.requester = WeatherRequester(config)
 
-        # 定时刷新
-        self.timer = QTimer(self)
-        self.timer.setInterval(60 * 60 * 1000)  # 每小时更新一次
-        self.timer.timeout.connect(self.refreshWeather)
-        self.timer.start()
-
-        self.refreshWeather()
-
-    @Slot()
-    def refreshWeather(self):
-        self.thread = QThread()
+        # 创建线程 + worker
+        self.thread = QThread(self)
         self.worker = WeatherWorker(self.requester)
         self.worker.moveToThread(self.thread)
 
-        self.thread.started.connect(self.worker.run)
+        # 信号连接
+        self.refreshRequested.connect(self.worker.fetch)
         self.worker.finished.connect(self._onWeatherDataReceived)
         self.worker.error.connect(self._onWeatherError)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
 
         self.thread.start()
+
+        # 定时器刷新
+        self.timer = QTimer(self)
+        self.timer.setInterval(60 * 60 * 1000)
+        self.timer.timeout.connect(self.refreshWeather)
+        self.timer.start()
+
+    @Slot(dict)
+    def setLocation(self, location: Dict[str, Any]):
+        self.requester.set_location(location)
+
+    @Slot()
+    def refreshWeather(self):
+        self.refreshRequested.emit()
 
     def _onWeatherDataReceived(self, data):
         self.weather_data = data
@@ -127,11 +171,28 @@ class WeatherManager(QObject):
         logger.info(f"天气数据更新于 {self.requester.date}")
 
     def _onWeatherError(self, error):
+        self.weatherUpdatedFailed.emit(error)
         logger.warning(f"天气获取失败：{error}")
+
+    @Slot(result=dict)
+    def getUnits(self):
+        units = {
+            "current_weather_units":
+                self.weather_data.get("current_weather_units") if self.weather_data else {},
+            "hourly_units":
+                self.weather_data.get("hourly_units") if self.weather_data else {},
+            "daily_units":
+                self.weather_data.get("daily_units") if self.weather_data else {}
+        }
+        return units
 
     @Slot(result=str)
     def getCity(self):
-        return self.requester.city_config["city_name"] or "Unknown"
+        return self.requester.city_config["name"] or "Unknown"
+
+    @Slot(result=float)
+    def getCurrentHour(self) -> float:
+        return parser.get_current_hour(self.weather_data.get("timezone_abbreviation")) if self.weather_data else 13
 
     @Slot(result=dict)
     def getCurrentWeather(self):
@@ -148,20 +209,53 @@ class WeatherManager(QObject):
 
     @Slot(result=int)
     def getCurrentAQI(self) -> int:
-        return parser.get_current_aqi(self.weather_data.get("hourly"), self.weather_data.get("aqi")) if\
-            self.weather_data else 0
+        return parser.get_current_aqi(
+            self.weather_data.get("hourly"),
+            self.weather_data.get("aqi"),
+            self.weather_data.get("timezone_abbreviation")
+        ) if self.weather_data else 0
 
     @Slot(result=int)
     def getCurrentUVI(self):
-        return parser.get_current_uvi(self.weather_data.get("hourly")) if self.weather_data else 0
+        return parser.get_current_uvi(
+            self.weather_data.get("hourly"), self.weather_data.get("timezone_abbreviation")
+        ) if self.weather_data else 0
+
+    @Slot(result=str)
+    def getCurrentApparentTemperature(self):
+        return parser.get_current_apparent_temperature(
+            self.weather_data.get("hourly"), self.weather_data.get("timezone_abbreviation")
+        ) if self.weather_data else 0
+
+    @Slot(result=str)
+    def getCurrentPrecipitation(self):
+        return parser.get_current_precipitation(
+            self.weather_data.get("daily"),
+            self.weather_data.get("daily_units"),
+            self.weather_data.get("timezone_abbreviation")
+        ) if self.weather_data else "Unknown"
 
     @Slot(result=list)
     def getHoursForecast(self):
-        return parser.parse_hourly_data(self.weather_data.get("hourly")) if self.weather_data else []
+        return parser.parse_hourly_data(
+            self.weather_data.get("hourly"),
+            self.weather_data.get("hourly_units"),
+            self.weather_data.get("timezone_abbreviation")
+        ) if self.weather_data else []
 
     @Slot(result=list)
     def getDaysForecast(self):
-        return parser.parse_daily_data(self.weather_data.get("daily")) if self.weather_data else []
+        return parser.parse_daily_data(
+            self.weather_data.get("daily"), self.weather_data.get("daily_units")
+        ) if self.weather_data else []
+
+    @Slot(result=dict)
+    def getHoursData(self):
+        return self.weather_data.get("hourly") if self.weather_data else {}
+
+    @Slot(result=dict)
+    def getDaysData(self):
+        return self.weather_data.get("daily") if self.weather_data else {}
 
     @Slot(result=str)
     def getLastUpdateTime(self):
@@ -172,17 +266,18 @@ class WeatherWorker(QObject):
     finished = Signal(dict)
     error = Signal(str)
 
-    def __init__(self, requester):
+    def __init__(self, requester: WeatherRequester):
         super().__init__()
         self.requester = requester
 
-    def run(self):
+    @Slot()
+    def fetch(self):
         try:
             result = self.requester.fetch_weather()
-            if result:
+            if isinstance(result, dict):
                 self.finished.emit(result)
             else:
-                self.error.emit("返回为空")
+                self.error.emit(result)
         except Exception as e:
             self.error.emit(str(e))
 

@@ -6,14 +6,14 @@ import RinWeather
 
 
 ColumnLayout {
-    id: aqiModel
+    id: apparentTempModel
 
-    property var precipitation: 0
+    property var temperature: 0
 
     Text {
         Layout.alignment: Qt.AlignBottom
         typography: Typography.Subtitle
         color: Colors.dark.textColor
-        text: precipitation
+        text: temperature + "°"
     }
 }

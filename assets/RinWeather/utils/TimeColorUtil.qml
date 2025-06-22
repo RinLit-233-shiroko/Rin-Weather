@@ -9,6 +9,7 @@ QtObject {
         { hour: 6, colorTop: "#245490", colorBottom: "#b4b8ce" },
         { hour: 9, colorTop: "#0f7eab", colorBottom: "#9dcff0" },
         { hour: 12, colorTop: "#245f98", colorBottom: "#63a3e3" },
+        { hour: 13, colorTop: "#103a7a", colorBottom: "#6b9ccd" },
         { hour: 16, colorTop: "#245f98", colorBottom: "#63a3e3" },
         { hour: 19, colorTop: "#224071", colorBottom: "#d4ab94" },
         { hour: 20, colorTop: "#242f4d", colorBottom: "#5a4d61" },

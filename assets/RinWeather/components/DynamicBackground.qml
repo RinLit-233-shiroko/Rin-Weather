@@ -8,14 +8,30 @@ Item {
     id: root
     property real currentHour: new Date().getHours() + new Date().getMinutes() / 60
     property var gradientColors: TimeColorUtil.getGradientByHour(currentHour)
+    property int duration: 1200 // 动画持续时间
 
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
-            GradientStop { position: 0.0; color: root.gradientColors.top }
-            GradientStop { position: 1.0; color: root.gradientColors.bottom }
+            GradientStop {
+                position: 0.0; color: root.gradientColors.top
+                Behavior on color {
+                    ColorAnimation {
+                        duration: root.duration
+                        easing.type: Easing.OutQuad
+                    }
+                }
+            }
+            GradientStop {
+                position: 1.0; color: root.gradientColors.bottom
+                Behavior on color {
+                    ColorAnimation {
+                        duration: root.duration
+                        easing.type: Easing.OutQuad
+                    }
+                }
+            }
         }
-
         Component.onCompleted: {
             console.log(root.gradientColors)
         }

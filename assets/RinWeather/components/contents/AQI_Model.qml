@@ -13,15 +13,18 @@ ColumnLayout {
     Text {
         Layout.alignment: Qt.AlignTop
         typography: Typography.Subtitle
+        color: Colors.dark.textColor
         text: aqi
     }
     Text {
         Layout.alignment: Qt.AlignBottom
         typography: Typography.BodyStrong
         opacity: 0.8
+        color: Colors.dark.textColor
         text: WeatherResource.getAQICategory(aqi)
     }
     Text {
+        color: Colors.dark.textColor
         text: qsTr("Current AQI is " + aqi + ".")
     }
 

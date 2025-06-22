@@ -48,7 +48,7 @@ ProgressBar {
 
         Item {
             id: clipper
-            width: aqiBar.visualPosition * barContent.width
+            width:uviBar.visualPosition * barContent.width
             height: barContent.height
             clip: true
 

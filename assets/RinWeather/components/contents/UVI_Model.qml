@@ -12,11 +12,13 @@ ColumnLayout {
 
     Text {
         Layout.alignment: Qt.AlignTop
+        color: Colors.dark.textColor
         typography: Typography.Subtitle
         text: uvi
     }
     Text {
         Layout.alignment: Qt.AlignBottom
+        color: Colors.dark.textColor
         typography: Typography.BodyStrong
         opacity: 0.8
         text: WeatherResource.getUVICategory(uvi)
