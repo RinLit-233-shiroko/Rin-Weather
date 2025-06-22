@@ -19,10 +19,16 @@ It features a smooth, modern interface, multi-city management, local data cachin
 
 ## Screenshots
 ![img](docs/image/img.png)
+
+<details>
+<summary>More Screenshots...</summary>
+
 ![img1](docs/image/img_1.png)
 ![img2](docs/image/img_2.png)
 ![img3](docs/image/img_3.png)
 ![img4](docs/image/img_4.png)
+
+</details>
 
 ## Aknowledgements
 
