@@ -23,3 +23,24 @@ It features a smooth, modern interface, multi-city management, local data cachin
 ![img2](docs/image/img_2.png)
 ![img3](docs/image/img_3.png)
 ![img4](docs/image/img_4.png)
+
+## Aknowledgements
+
+### Dependencies
+- [RinUI](https://github.com/RinLit-233-shiroko/Rin-UI)
+- [PySide6](https://wiki.qt.io/Qt_for_Python)
+- [requests](https://pypi.org/project/requests/)
+- [loguru](https://github.com/Delgan/loguru)
+
+### Contributors
+Thanks to the great people who contributed to this project.
+[![Contributors](http://contrib.nn.ci/api?repo=rinlit-233-shiroko/Rin-Weather)](https://github.com/RinLit-233-shiroko/Rin-Weather/graphs/contributors)
+
+## 📜 License
+This project is licensed under the **MIT** License, you can learn more about it in the [license file](./LICENSE).
+
+Copyright © 2025 RinLit
+
+##
+
+This is an experimental project by Rin as a newcomer. Welcome to suggest and contribute to this project. ❤️
