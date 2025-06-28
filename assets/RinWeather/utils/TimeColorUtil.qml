@@ -7,7 +7,7 @@ QtObject {
     property var gradientPoints: [
         { hour: 5, colorTop: "#090f1f", colorBottom: "#1b1f2a" },
         { hour: 6, colorTop: "#245490", colorBottom: "#b4b8ce" },
-        { hour: 9, colorTop: "#0f7eab", colorBottom: "#9dcff0" },
+        { hour: 9, colorTop: "#0f53ab", colorBottom: "#9dc1f0" },
         { hour: 12, colorTop: "#245f98", colorBottom: "#63a3e3" },
         { hour: 13, colorTop: "#103a7a", colorBottom: "#6b9ccd" },
         { hour: 16, colorTop: "#245f98", colorBottom: "#63a3e3" },
