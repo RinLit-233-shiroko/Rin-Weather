@@ -35,11 +35,15 @@ jobs:
             --add-data "assets;assets" `
             app.py
 
-      - name: Upload EXE as artifact
+      - name: Zip Windows EXE
+        run: |
+          powershell Compress-Archive -Path dist/RinWeather/* -DestinationPath dist/RinWeather-Windows.zip
+
+      - name: Upload Windows zip as artifact
         uses: actions/upload-artifact@v4
         with:
           name: RinWeather-Windows
-          path: dist/RinWeather/**
+          path: dist/RinWeather-Windows.zip
 
   build-macos:
     runs-on: macos-latest
@@ -66,11 +70,16 @@ jobs:
             --add-data "assets:assets" \
             app.py
 
-      - name: Upload macOS app as artifact
+      - name: Zip macOS .app
+        run: |
+          cd dist
+          ditto -c -k --sequesterRsrc --keepParent RinWeather.app RinWeather-macOS.zip
+
+      - name: Upload macOS zip as artifact
         uses: actions/upload-artifact@v4
         with:
           name: RinWeather-macOS
-          path: dist/RinWeather.app/**
+          path: dist/RinWeather-macOS.zip
 
   release:
     needs: [build-windows, build-macos]
@@ -80,19 +89,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 为了 changelog 能获取完整提交历史
+          fetch-depth: 0
 
-      - name: Download artifacts (Windows)
+      - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
           name: RinWeather-Windows
-          path: dist/RinWeather-Windows
+          path: dist/
 
-      - name: Download artifacts (macOS)
+      - name: Download macOS artifact
         uses: actions/download-artifact@v4
         with:
           name: RinWeather-macOS
-          path: dist/RinWeather-macOS
+          path: dist/
 
       - name: Set up git-cliff
         uses: kenji-miyake/setup-git-cliff@v1
@@ -107,10 +116,9 @@ jobs:
           name: ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
           body_path: CHANGELOG.md
-          draft: true  # 草稿发布
-          overwrite: true
+          draft: true  # 你可以改成 false 来直接发布
           files: |
-            dist/RinWeather-Windows/**
-            dist/RinWeather-macOS/**
+            dist/RinWeather-Windows.zip
+            dist/RinWeather-macOS.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
