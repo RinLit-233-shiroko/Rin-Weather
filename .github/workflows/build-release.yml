@@ -1,0 +1,114 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # 只有打 tag 时才触发
+
+permissions:
+  contents: write  # 允许发布 release
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build EXE
+        run: |
+          pyinstaller ^
+            --noconsole ^
+            --contents-directory="." ^
+            --name RinWeather ^
+            --icon=assets/resources/images/logo.ico ^
+            --add-data "assets;assets" ^
+            app.py
+
+      - name: Upload EXE as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RinWeather-Windows
+          path: dist/RinWeather/**
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install pyinstaller
+          pip3 install -r requirements.txt
+
+      - name: Build .app
+        run: |
+          pyinstaller \
+            --noconsole \
+            --name RinWeather \
+            --icon=assets/resources/images/logo.icns \
+            --add-data "assets:assets" \
+            app.py
+
+      - name: Upload macOS app as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RinWeather-macOS
+          path: dist/RinWeather.app/**
+
+  release:
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 为了 changelog 能获取完整提交历史
+
+      - name: Download artifacts (Windows)
+        uses: actions/download-artifact@v4
+        with:
+          name: RinWeather-Windows
+          path: dist/RinWeather-Windows
+
+      - name: Download artifacts (macOS)
+        uses: actions/download-artifact@v4
+        with:
+          name: RinWeather-macOS
+          path: dist/RinWeather-macOS
+
+      - name: Set up git-cliff
+        uses: kenji-miyake/setup-git-cliff@v1
+
+      - name: Generate CHANGELOG.md
+        run: |
+          git cliff --tag "${{ github.ref_name }}" > CHANGELOG.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          body_path: CHANGELOG.md
+          files: |
+            dist/RinWeather-Windows/**
+            dist/RinWeather-macOS/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
