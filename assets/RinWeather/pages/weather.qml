@@ -36,6 +36,7 @@ FluentPage {
     property var currentAQI: []
     property var currentUVI: 0
     property var currentHour: 0
+    property var currentSunriseSunset: []
     property var currentPrecipitation: 0
     property var currentApparentTemperature: 0
     property var currentWeather: {}
@@ -52,6 +53,7 @@ FluentPage {
         currentAQI = WeatherManager.getCurrentAQI()
         currentUVI = WeatherManager.getCurrentUVI()
         currentHour = WeatherManager.getCurrentHour()
+        currentSunriseSunset = WeatherManager.getCurrentSunriseSunset()
         currentPrecipitation = WeatherManager.getCurrentPrecipitation()
         currentApparentTemperature = WeatherManager.getCurrentApparentTemperature()
         currentWeather = WeatherManager.getCurrentWeather()
@@ -352,8 +354,8 @@ FluentPage {
             icon.name: "ic_fluent_temperature_20_regular"
             Sun_Model {
                 anchors.fill: parent
-                // sunrise: dailyData["sunrise"]
-                // sunset: dailyData["sunset"]
+                sunrise: currentSunriseSunset[0]
+                sunset: currentSunriseSunset[1]
             }
         }
     }

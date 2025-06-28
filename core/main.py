@@ -1,7 +1,7 @@
 from pathlib import Path
 from RinUI import RinUIWindow
 
-from assets import ASSETS_PATH, QML_PATH
+from assets import ASSETS_PATH, QML_PATH, RESOURCES_PATH
 from core import PathManager, WeatherResourceManager, WeatherManager, WeatherConfig, CityManager
 
 
@@ -24,6 +24,7 @@ class RinWeatherMain(RinUIWindow):
         print("🌦️ RinWeather Application Initialized")
 
         self.load(Path(QML_PATH, "app.qml"))
+        self.setIcon(str(Path(RESOURCES_PATH / "images" / "logo.png")))
 
 
 

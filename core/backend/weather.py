@@ -194,6 +194,11 @@ class WeatherManager(QObject):
     def getCurrentHour(self) -> float:
         return parser.get_current_hour(self.weather_data.get("timezone_abbreviation")) if self.weather_data else 13
 
+    @Slot(result=list)
+    def getCurrentSunriseSunset(self) -> list:
+        return parser.get_current_sunrise_sunset(
+            self.weather_data.get("daily")) if self.weather_data else []
+
     @Slot(result=dict)
     def getCurrentWeather(self):
         result = self.weather_data.get("current_weather") if self.weather_data else {}

@@ -21,6 +21,19 @@ RowLayout {
         angle: windModel.winddirection
         value: windModel.windspeed
         description: windModel.winspeedunit
+
+        HoverHandler {
+            id: hoverHandler
+        }
+
+        ToolTip {
+            visible: hoverHandler.hovered
+            delay: 200
+            text: qsTr(
+                "Wind Speed: " + windModel.windspeed + windModel.winspeedunit + "\n" +
+                "Wind Direction: " + windModel.winddirection + "°"
+            )
+        }
     }
 
     ColumnLayout {

@@ -29,6 +29,26 @@ def get_current_precipitation(daily: dict, units: dict = None, timezone_abbrevia
         return "Not Available"  # 未找到对应时间
 
 
+def get_current_sunrise_sunset(daily: dict) -> list[str]:
+    """
+    获取今天的日出和日落时间（本地时间，已由API处理），返回 ["HH:mm", "HH:mm"]
+    """
+    # 今天日期字符串
+    today_str = datetime.now().strftime("%Y-%m-%d")
+
+    try:
+        index = daily["time"].index(today_str)
+        sunrise_str = daily["sunrise"][index]
+        sunset_str = daily["sunset"][index]
+
+        sunrise_time = datetime.fromisoformat(sunrise_str).strftime("%H:%M")
+        sunset_time = datetime.fromisoformat(sunset_str).strftime("%H:%M")
+
+        return [sunrise_time, sunset_time]
+    except (ValueError, KeyError, IndexError):
+        return ["Not Available", "Not Available"]
+
+
 def get_current_hour(timezone_abbreviation: Optional[str] = None) -> float:
     """
     获取当前小时，返回形如 14.5（14点30分）的浮点数
