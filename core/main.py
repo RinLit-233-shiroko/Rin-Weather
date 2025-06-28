@@ -1,4 +1,6 @@
 from pathlib import Path
+
+from PySide6.QtCore import QCoreApplication
 from RinUI import RinUIWindow
 
 from assets import ASSETS_PATH, QML_PATH, RESOURCES_PATH
@@ -26,5 +28,10 @@ class RinWeatherMain(RinUIWindow):
         self.load(Path(QML_PATH, "app.qml"))
         self.setIcon(str(Path(RESOURCES_PATH / "images" / "logo.png")))
 
+        app_instance = QCoreApplication.instance()
+        app_instance.aboutToQuit.connect(self.cleanup)
 
-
+    def cleanup(self):
+        print("RinWeather Application Cleanup")
+        self.weatherManager.cleanup()
+        self.cityManager.cleanup()

@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 
 from PySide6.QtCore import QObject, Slot, QDateTime, QTimer, Signal, QThread
 
+
 proxies = {
     "http": None,
     "https": None
@@ -21,7 +22,6 @@ class WeatherRequester:
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         """
         初始化请求
-        :param location:
         :param config:
         """
         super().__init__()
@@ -156,6 +156,12 @@ class WeatherManager(QObject):
         self.timer.setInterval(60 * 60 * 1000)
         self.timer.timeout.connect(self.refreshWeather)
         self.timer.start()
+
+    def cleanup(self):
+        self.timer.stop()
+        self.worker.deleteLater()
+        self.thread.terminate()
+        self.thread.quit()
 
     @Slot(dict)
     def setLocation(self, location: Dict[str, Any]):

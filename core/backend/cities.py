@@ -94,6 +94,10 @@ class CityManager(QObject):
 
         self.thread.start()
 
+    def cleanup(self):
+        self.thread.terminate()
+        self.thread.quit()
+
     @Slot(str)
     def searchCities(self, keyword: str):
         self.searchRequested.emit(keyword)
@@ -111,10 +115,6 @@ class CityManager(QObject):
     @Slot(result=list)
     def getCities(self) -> List[Dict]:
         return self.city_data
-
-    def __del__(self):
-        self.thread.quit()
-        self.thread.wait()
 
 
 if __name__ == '__main__':
