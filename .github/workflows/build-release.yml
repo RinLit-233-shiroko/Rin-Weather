@@ -107,6 +107,7 @@ jobs:
           name: ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
           body_path: CHANGELOG.md
+          draft: true  # 草稿发布
           files: |
             dist/RinWeather-Windows/**
             dist/RinWeather-macOS/**
