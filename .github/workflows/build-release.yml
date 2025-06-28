@@ -27,12 +27,12 @@ jobs:
 
       - name: Build EXE
         run: |
-          pyinstaller ^
-            --noconsole ^
-            --contents-directory="." ^
-            --name RinWeather ^
-            --icon=assets/resources/images/logo.ico ^
-            --add-data "assets;assets" ^
+          pyinstaller `
+            --noconsole `
+            --contents-directory="." `
+            --name RinWeather `
+            --icon=assets/resources/images/logo.ico `
+            --add-data "assets;assets" `
             app.py
 
       - name: Upload EXE as artifact
