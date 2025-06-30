@@ -89,8 +89,6 @@ class WeatherConfig(ConfigManager, QObject):
 
     @Slot(str)
     def setLanguage(self, language: str) -> None:
-        if language == self.config["locale"]["language"]:
-            return
         lang_path = Path(ASSETS_PATH / "locales" / f"{language}.qm")
         if not lang_path.exists():  # fallback
             print(f"Language file {lang_path} not found. Fallback to default (en_US)")

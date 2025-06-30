@@ -261,17 +261,17 @@
         <translation>Rin 天气</translation>
     </message>
     <message>
-        <location filename="../RinWeather/app.qml" line="16"/>
+        <location filename="../RinWeather/app.qml" line="19"/>
         <source>Weather</source>
         <translation>天气</translation>
     </message>
     <message>
-        <location filename="../RinWeather/app.qml" line="21"/>
+        <location filename="../RinWeather/app.qml" line="24"/>
         <source>Cities</source>
         <translation>城市</translation>
     </message>
     <message>
-        <location filename="../RinWeather/app.qml" line="26"/>
+        <location filename="../RinWeather/app.qml" line="29"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
@@ -297,92 +297,231 @@
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="18"/>
         <source>Language</source>
-        <translation>语言</translation>
+        <translation type="vanished">语言</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="23"/>
+        <location filename="../RinWeather/pages/settings.qml" line="18"/>
+        <source>Network</source>
+        <translation>网络</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="25"/>
+        <source>Proxy</source>
+        <translation>代理</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="26"/>
+        <source>Configure your network proxy settings</source>
+        <translation>配置您的网络代理</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="31"/>
+        <source>HTTP Proxy</source>
+        <translation>HTTP 代理</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="32"/>
+        <source>Configure your HTTP proxy settings</source>
+        <translation>配置您的 HTTP 代理设置</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="36"/>
+        <source>http://example.com:8080</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="45"/>
+        <source>HTTPS Proxy</source>
+        <translation>HTTPS 代理</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="46"/>
+        <source>Configure your HTTPS proxy settings</source>
+        <translation>配置您的 HTTPS 代理设置</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="50"/>
+        <source>https://example.com:8080</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="59"/>
+        <source>Cache Expiration</source>
+        <translation>缓存过期时间</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="60"/>
+        <source>Configure the cache expiration time (minutes) for Rin Weather</source>
+        <translation>配置 Rin Weather 的数据缓存过期时间（分钟）</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="81"/>
+        <source>Locales</source>
+        <translation>区域设置</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="86"/>
+        <source>Units</source>
+        <translation>单位</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="87"/>
+        <source>Configure the units for Rin Weather</source>
+        <translation>为 Rin Weather 设置偏好单位</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="91"/>
+        <source>Temperature Units</source>
+        <translation>温度单位</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="92"/>
+        <source>Configure the temperature units</source>
+        <translation>配置温度单位</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="96"/>
+        <source>Celsius</source>
+        <translation>摄氏度</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="96"/>
+        <source>Fahrenheit</source>
+        <translation>华氏度</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="104"/>
+        <source>Wind Speed Units</source>
+        <translation>风速单位</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="105"/>
+        <source>Configure the wind speed units</source>
+        <translation>配置风速单位</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="110"/>
+        <source>Meters per second</source>
+        <translation>米/秒</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="111"/>
+        <source>Kilometers per hour</source>
+        <translation>千米/时</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="112"/>
+        <source>Miles per hour</source>
+        <translation>英里/时</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="113"/>
+        <source>Knots</source>
+        <translation>节</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="122"/>
+        <source>Precipitation Units</source>
+        <translation>降水单位</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="123"/>
+        <source>Configure the precipitation units</source>
+        <translation>配置降水单位</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="127"/>
+        <source>Millimeters</source>
+        <translation>毫米</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="127"/>
+        <source>Inches</source>
+        <translation>英寸</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="138"/>
         <source>Display Language</source>
         <translation>显示语言</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="24"/>
+        <location filename="../RinWeather/pages/settings.qml" line="139"/>
         <source>Set your preferred language for Rin Weather</source>
         <translation>为 Rin Weather 设置您的偏好语言</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="31"/>
+        <location filename="../RinWeather/pages/settings.qml" line="146"/>
         <source>Use System Language</source>
         <translation>跟随系统语言</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="57"/>
+        <location filename="../RinWeather/pages/settings.qml" line="172"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="62"/>
+        <location filename="../RinWeather/pages/settings.qml" line="177"/>
         <source>Rin Weather</source>
         <translation>Rin 天气</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="63"/>
+        <location filename="../RinWeather/pages/settings.qml" line="178"/>
         <source>© 2025 RinLit. All rights reserved.</source>
         <translation>© 2025 RinLit. 保留所有权利。</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="74"/>
+        <location filename="../RinWeather/pages/settings.qml" line="189"/>
         <source>To clone this repository</source>
         <translation>克隆这个存储库</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="91"/>
+        <location filename="../RinWeather/pages/settings.qml" line="206"/>
         <source>File a bug or request new sample</source>
         <translation>提出Bug或请求新功能</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="94"/>
+        <location filename="../RinWeather/pages/settings.qml" line="209"/>
         <source>Create an issue on GitHub</source>
         <translation>在 GitHub 创建议题</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="102"/>
+        <location filename="../RinWeather/pages/settings.qml" line="217"/>
         <source>Dependencies &amp; references</source>
         <translation>依赖以及引用</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="105"/>
+        <location filename="../RinWeather/pages/settings.qml" line="220"/>
         <source>Qt &amp; Qt Quick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="109"/>
+        <location filename="../RinWeather/pages/settings.qml" line="224"/>
         <source>Fluent Design System</source>
         <translation>流畅设计体系</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="113"/>
+        <location filename="../RinWeather/pages/settings.qml" line="228"/>
         <source>Fluent UI System Icons</source>
         <translation>流畅系统图标</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="117"/>
+        <location filename="../RinWeather/pages/settings.qml" line="232"/>
         <source>WinUI 3 Gallery</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="123"/>
+        <location filename="../RinWeather/pages/settings.qml" line="238"/>
         <source>License</source>
         <translation>协议</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="124"/>
+        <location filename="../RinWeather/pages/settings.qml" line="239"/>
         <source>This project is licensed under the MIT license</source>
         <translation>本项目基于 MIT 协议分发</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="127"/>
+        <location filename="../RinWeather/pages/settings.qml" line="242"/>
         <source>MIT License</source>
         <translation>MIT 开源协议</translation>
     </message>
