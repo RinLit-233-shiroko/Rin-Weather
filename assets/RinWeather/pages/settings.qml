@@ -179,9 +179,10 @@ FluentPage {
             source: RinPath.resources("images/logo.png")
             // iconSize: 28
 
+            // 版本号
             content: Text {
                 color: Theme.currentTheme.colors.textSecondaryColor
-                text: "0.0.1"
+                text: "1.0.0"
             }
 
             SettingItem {
@@ -215,6 +216,10 @@ FluentPage {
                     Layout.fillWidth: true
                     Text {
                         text: qsTr("Dependencies & references")
+                    }
+                    Hyperlink {
+                        text: qsTr("Rin UI")
+                        openUrl: qsTr("https://ui.rinlit.cn/")
                     }
                     Hyperlink {
                         text: qsTr("Qt & Qt Quick")

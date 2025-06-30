@@ -492,36 +492,46 @@
     </message>
     <message>
         <location filename="../RinWeather/pages/settings.qml" line="220"/>
+        <source>Rin UI</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="221"/>
+        <source>https://ui.rinlit.cn/</source>
+        <translation>https://ui.rinlit.cn/zh</translation>
+    </message>
+    <message>
+        <location filename="../RinWeather/pages/settings.qml" line="224"/>
         <source>Qt &amp; Qt Quick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="224"/>
+        <location filename="../RinWeather/pages/settings.qml" line="228"/>
         <source>Fluent Design System</source>
         <translation>流畅设计体系</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="228"/>
+        <location filename="../RinWeather/pages/settings.qml" line="232"/>
         <source>Fluent UI System Icons</source>
         <translation>流畅系统图标</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="232"/>
+        <location filename="../RinWeather/pages/settings.qml" line="236"/>
         <source>WinUI 3 Gallery</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="238"/>
+        <location filename="../RinWeather/pages/settings.qml" line="242"/>
         <source>License</source>
         <translation>协议</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="239"/>
+        <location filename="../RinWeather/pages/settings.qml" line="243"/>
         <source>This project is licensed under the MIT license</source>
         <translation>本项目基于 MIT 协议分发</translation>
     </message>
     <message>
-        <location filename="../RinWeather/pages/settings.qml" line="242"/>
+        <location filename="../RinWeather/pages/settings.qml" line="246"/>
         <source>MIT License</source>
         <translation>MIT 开源协议</translation>
     </message>
