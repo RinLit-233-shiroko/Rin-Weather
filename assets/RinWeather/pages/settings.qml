@@ -219,7 +219,7 @@ FluentPage {
                     }
                     Hyperlink {
                         text: qsTr("Rin UI")
-                        openUrl: qsTr("https://ui.rinlit.cn/")
+                        openUrl: Qt.resolvedUrl(qsTr("https://ui.rinlit.cn/"))
                     }
                     Hyperlink {
                         text: qsTr("Qt & Qt Quick")
