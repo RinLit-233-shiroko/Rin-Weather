@@ -1,9 +1,10 @@
 import requests
-from PySide6.QtCore import QObject, Signal, Slot, QThread, QMetaObject
+from PySide6.QtCore import QObject, Signal, Slot, QThread
 from typing import List, Dict, Any
 
-from PySide6.QtGui import Qt
 from loguru import logger
+
+from core.backend.config import WeatherConfig
 
 proxies = {
     "http": None,
@@ -60,14 +61,16 @@ class CitySearchWorker(QObject):
     finished = Signal(list)
     error = Signal(str)
 
-    def __init__(self, searcher: CitySearcher):
+    def __init__(self, searcher: CitySearcher, config: WeatherConfig):
         super().__init__()
         self.searcher = searcher
+        self.config = config
 
     @Slot(str)
     def doSearch(self, keyword: str):
         try:
-            result = self.searcher.search_city(keyword)
+            language = self.config.getLanguage().split("_")[0]
+            result = self.searcher.search_city(keyword, language)
             self.finished.emit(result)
         except Exception as e:
             self.error.emit(str(e))
@@ -78,13 +81,14 @@ class CityManager(QObject):
     citySearchFailed = Signal(str)
     searchRequested = Signal(str)
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, config: WeatherConfig):
+        super().__init__(None)
         self.city_data: List[Dict] = []
+        self.config = config
 
         # 初始化唯一线程和 worker
         self.thread = QThread(self)
-        self.worker = CitySearchWorker(CitySearcher())
+        self.worker = CitySearchWorker(CitySearcher(), self.config)
         self.worker.moveToThread(self.thread)
 
         # 连接信号

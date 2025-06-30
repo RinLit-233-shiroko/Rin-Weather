@@ -7,8 +7,9 @@ from datetime import datetime, timedelta
 
 from PySide6.QtCore import QObject, Slot, QDateTime, QTimer, Signal, QThread
 
+from core.backend.config import WeatherConfig
 
-proxies = {
+default_proxies = {
     "http": None,
     "https": None
 }
@@ -19,7 +20,7 @@ class WeatherRequester:
     天气请求
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: WeatherConfig):
         """
         初始化请求
         :param config:
@@ -27,7 +28,7 @@ class WeatherRequester:
         super().__init__()
         self.config = config or DEFAULT_CONFIG
         self.current_city = self.config["weather"]["current_city"] \
-            if self.config["weather"]["current_city"] <= len(self.config["weather"]["cities"]) else 0
+            if self.config["weather"]["current_city"] > len(self.config["weather"]["cities"]) else 0
 
         self.city_config = {
             "name": self.config["weather"]["cities"][self.current_city]["name"],
@@ -36,9 +37,10 @@ class WeatherRequester:
         }
 
         # units
-        self.temp_unit = self.config["weather"]["temp_unit"]  # 单位
-        self.windspeed_unit = self.config["weather"]["windspeed_unit"]
-        self.precipitation_unit = self.config["weather"]["precipitation_unit"]
+        self.temp_unit = None
+        self.windspeed_unit = None
+        self.precipitation_unit = None
+        self.load_configs()
 
         # API URL
         self.base_url = "https://api.open-meteo.com/v1/forecast"
@@ -53,10 +55,15 @@ class WeatherRequester:
         self.last_location = None
         self.cache = {}
 
+    def load_configs(self):
+        self.temp_unit = self.config["weather"]["temp_unit"]  # 单位
+        self.windspeed_unit = self.config["weather"]["windspeed_unit"]
+        self.precipitation_unit = self.config["weather"]["precipitation_unit"]
+
     def set_location(self, location: Dict[str, Any]):
         self.city_config = location
 
-    def fetch_weather(self):
+    def fetch_weather(self, proxies=default_proxies):
         loc = f"{self.city_config['latitude']},{self.city_config['longitude']}"
         now = datetime.now()
 
@@ -66,6 +73,7 @@ class WeatherRequester:
                 logger.info(f"Returning cached: {loc}")
                 return cache_entry["data"]
 
+        self.load_configs()
         params = {
             "latitude": self.city_config["latitude"],  # 纬度
             "longitude": self.city_config["longitude"], "current_weather": True,  # 经度
@@ -128,6 +136,9 @@ class WeatherRequester:
         data["aqi"] = aqi
         return data
 
+    def clean_cache(self):
+        self.cache = {}
+
 
 class WeatherManager(QObject):
     weatherUpdated = Signal()
@@ -137,17 +148,19 @@ class WeatherManager(QObject):
     def __init__(self, config: Optional = None, parent=None):
         super().__init__(parent)
         self.weather_data = None
-        self.requester = WeatherRequester(config)
+        self.config = config
+        self.requester = WeatherRequester(self.config)
 
         # 创建线程 + worker
         self.thread = QThread(self)
-        self.worker = WeatherWorker(self.requester)
+        self.worker = WeatherWorker(self.requester, self.config)
         self.worker.moveToThread(self.thread)
 
         # 信号连接
         self.refreshRequested.connect(self.worker.fetch)
         self.worker.finished.connect(self._onWeatherDataReceived)
         self.worker.error.connect(self._onWeatherError)
+        self.config.dataUpdated.connect(self.requester.clean_cache)
 
         self.thread.start()
 
@@ -277,14 +290,15 @@ class WeatherWorker(QObject):
     finished = Signal(dict)
     error = Signal(str)
 
-    def __init__(self, requester: WeatherRequester):
+    def __init__(self, requester: WeatherRequester, config: WeatherConfig):
         super().__init__()
         self.requester = requester
+        self.config = config
 
     @Slot()
     def fetch(self):
         try:
-            result = self.requester.fetch_weather()
+            result = self.requester.fetch_weather(proxies=self.config.getProxies())
             if isinstance(result, dict):
                 self.finished.emit(result)
             else:

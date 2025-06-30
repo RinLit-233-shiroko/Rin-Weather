@@ -15,6 +15,160 @@ FluentPage {
         spacing: 3
         Text {
             typography: Typography.BodyStrong
+            text: qsTr("Network")
+        }
+
+        // 网络设置
+        SettingExpander {
+            id: networkExpander
+            width: parent.width
+            title: qsTr("Proxy")
+            description: qsTr("Configure your network proxy settings")
+            icon: "ic_fluent_globe_20_regular"
+            property var currentProxies: WeatherConfig.getProxies()
+
+            SettingItem {
+                title: qsTr("HTTP Proxy")
+                description: qsTr("Configure your HTTP proxy settings")
+
+                TextField {
+                    id: httpProxy
+                    placeholderText: qsTr("http://example.com:8080")
+                    text: networkExpander.currentProxies.http
+                    onTextChanged: {
+                        networkExpander.currentProxies.http = text
+                        WeatherConfig.setProxies(networkExpander.currentProxies)
+                    }
+                }
+            }
+            SettingItem {
+                title: qsTr("HTTPS Proxy")
+                description: qsTr("Configure your HTTPS proxy settings")
+
+                TextField {
+                    id: httpsProxy
+                    placeholderText: qsTr("https://example.com:8080")
+                    text: networkExpander.currentProxies.https
+                    onTextChanged: {
+                        networkExpander.currentProxies.https = text
+                        WeatherConfig.setProxies(networkExpander.currentProxies)
+                    }
+                }
+            }
+            SettingItem {
+                title: qsTr("Cache Expiration")
+                description: qsTr("Configure the cache expiration time (minutes) for Rin Weather")
+
+                SpinBox {
+                    id: cacheExpiration
+                    from: 0
+                    to: 1440
+                    stepSize: 1
+                    value: WeatherConfig.getCacheExpiration()
+                    onValueChanged: {
+                        WeatherConfig.setCacheExpiration(value)
+                    }
+                }
+            }
+        }
+    }
+
+    Column {
+        Layout.fillWidth: true
+        spacing: 3
+        Text {
+            typography: Typography.BodyStrong
+            text: qsTr("Locales")
+        }
+
+        SettingExpander {
+            width: parent.width
+            title: qsTr("Units")
+            description: qsTr("Configure the units for Rin Weather")
+            icon: "ic_fluent_grid_20_regular"
+
+            SettingItem {
+                title: qsTr("Temperature Units")
+                description: qsTr("Configure the temperature units")
+
+                ComboBox {
+                    property var data: ["celsius", "fahrenheit"]
+                    model: [qsTr("Celsius"), qsTr("Fahrenheit")]
+                    currentIndex: data.indexOf(WeatherConfig.getTempUnit())
+                    onCurrentIndexChanged: {
+                        WeatherConfig.setTempUnit(data[currentIndex])
+                    }
+                }
+            }
+            SettingItem {
+                title: qsTr("Wind Speed Units")
+                description: qsTr("Configure the wind speed units")
+
+                ComboBox {
+                    property var data: ["ms", "kmh", "mph", "kn"]
+                    model: [
+                        qsTr("Meters per second"),
+                        qsTr("Kilometers per hour"),
+                        qsTr("Miles per hour"),
+                        qsTr("Knots")
+                    ]
+                    currentIndex: data.indexOf(WeatherConfig.getWindspeedUnit())
+                    onCurrentIndexChanged: {
+                        WeatherConfig.setWindspeedUnit(data[currentIndex])
+                    }
+                }
+            }
+            SettingItem {
+                title: qsTr("Precipitation Units")
+                description: qsTr("Configure the precipitation units")
+
+                ComboBox {
+                    property var data: ["mm", "inch"]
+                    model: [qsTr("Millimeters"), qsTr("Inches")]
+                    currentIndex: data.indexOf(WeatherConfig.getPrecipitationUnit())
+                    onCurrentIndexChanged: {
+                        WeatherConfig.setPrecipitationUnit(data[currentIndex])
+                    }
+                }
+            }
+        }
+
+        SettingCard {
+            width: parent.width
+            title: qsTr("Display Language")
+            description: qsTr("Set your preferred language for Rin Weather")
+            icon: "ic_fluent_translate_20_regular"
+
+            ComboBox {
+                property var data: [WeatherConfig.getSystemLanguage(), "en_US", "zh_CN"]
+                property bool initialized: false
+                model: ListModel {
+                    ListElement { text: qsTr("Use System Language") }
+                    ListElement { text: "English (US)" }
+                    ListElement { text: "简体中文" }
+                }
+
+                Component.onCompleted: {
+                    currentIndex = data.indexOf(WeatherConfig.getLanguage())
+                    console.log("Language: " + WeatherConfig.getLanguage())
+                    initialized = true
+                }
+
+                onCurrentIndexChanged: {
+                    if (initialized) {
+                        console.log("Language changed to: " + data[currentIndex])
+                        WeatherConfig.setLanguage(data[currentIndex])
+                    }
+                }
+            }
+        }
+    }
+
+    Column {
+        Layout.fillWidth: true
+        spacing: 3
+        Text {
+            typography: Typography.BodyStrong
             text: qsTr("About")
         }
 
@@ -22,7 +176,7 @@ FluentPage {
             width: parent.width
             title: qsTr("Rin Weather")
             description: qsTr("© 2025 RinLit. All rights reserved.")
-            // source: Qt.resolvedUrl("../assets/BA_Pic_Shiroko-chibi.png")
+            source: RinPath.resources("images/logo.png")
             // iconSize: 28
 
             content: Text {
@@ -37,7 +191,7 @@ FluentPage {
                 TextInput {
                     id: repoUrl
                     readOnly: true
-                    text: "git clone https://github.com/RinLit-233-shiroko/Rin-UI.git"
+                    text: "git clone https://github.com/RinLit-233-shiroko/Rin-Weather.git"
                     wrapMode: TextInput.Wrap
                 }
                 ToolButton {
@@ -53,7 +207,7 @@ FluentPage {
 
                 Hyperlink {
                     text: qsTr("Create an issue on GitHub")
-                    openUrl: "https://github.com/microsoft/WinUI-Gallery/issues/new/choose"
+                    openUrl: "https://github.com/RinLit-233-shiroko/Rin-Weather/issues/new/choose"
                 }
             }
             SettingItem {
