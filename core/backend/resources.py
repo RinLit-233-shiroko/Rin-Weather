@@ -5,11 +5,6 @@ from PySide6.QtCore import QObject, Slot, QCoreApplication
 from core import ASSETS_PATH
 
 
-def qsTr(context: str, text: str) -> str:
-    """统一翻译接口，传入上下文和文本，返回翻译结果"""
-    return QCoreApplication.translate(context, text)
-
-
 class WeatherResourceManager(QObject):
     def __init__(self):
         super().__init__()
@@ -32,57 +27,57 @@ class WeatherResourceManager(QObject):
     def getWeatherDescription(self, code: int, night: bool = False) -> str:
         if str(code) in self.weather_data:
             desc = self.weather_data[str(code)]["night" if night else "day"]["description"]
-            return qsTr("WeatherDescriptions", desc)
+            return self.tr(desc)
         else:
-            return qsTr("WeatherDescriptions", "Unknown")
+            return self.tr("Unknown")
 
     @Slot(int, result=str)
     def getUVICategory(self, code: int) -> str:
         for level, value in self.uvi_data.items():
             min_level, max_level = level.split("-")
             if int(min_level) <= code <= int(max_level):
-                return qsTr("UVIInfo", value["category"])
-        return qsTr("UVIInfo", "Unknown")
+                return self.tr(value["category"])
+        return self.tr("Unknown")
 
     @Slot(int, result=str)
     def getUVIInfo(self, code: int) -> str:
         for level, value in self.uvi_data.items():
             min_level, max_level = level.split("-")
             if int(min_level) <= code <= int(max_level):
-                return qsTr("UVIInfo", value["impact"])
-        return qsTr("UVIInfo", "Unknown")
+                return self.tr(value["impact"])
+        return self.tr("Unknown")
 
     @Slot(int, result=str)
     def getUVIAdvice(self, code: int) -> str:
         for level, value in self.uvi_data.items():
             min_level, max_level = level.split("-")
             if int(min_level) <= code <= int(max_level):
-                return qsTr("UVIInfo", value["advice"])
-        return qsTr("UVIInfo", "Unknown")
+                return self.tr(value["advice"])
+        return self.tr("Unknown")
 
     @Slot(int, result=str)
     def getAQICategory(self, code: int) -> str:
         for level, value in self.aqi_data.items():
             min_level, max_level = level.split("-")
             if int(min_level) <= code <= int(max_level):
-                return qsTr("AQIInfo", value["category"])
-        return qsTr("AQIInfo", "Unknown")
+                return self.tr(value["category"])
+        return self.tr("Unknown")
 
     @Slot(int, result=str)
     def getAQIInfo(self, code: int) -> str:
         for level, value in self.aqi_data.items():
             min_level, max_level = level.split("-")
             if int(min_level) <= code <= int(max_level):
-                return qsTr("AQIInfo", value["impact"])
-        return qsTr("AQIInfo", "Unknown")
+                return self.tr(value["impact"])
+        return self.tr("Unknown")
 
     @Slot(int, result=str)
     def getAQIAdvice(self, code: int) -> str:
         for level, value in self.aqi_data.items():
             min_level, max_level = level.split("-")
             if int(min_level) <= code <= int(max_level):
-                return qsTr("AQIInfo", value["advice"])
-        return qsTr("AQIInfo", "Unknown")
+                return self.tr( value["advice"])
+        return self.tr("Unknown")
 
     @staticmethod
     def load_json_data(file_path) -> dict:

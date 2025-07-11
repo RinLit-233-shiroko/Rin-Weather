@@ -88,7 +88,7 @@
     </message>
 </context>
 <context>
-    <name>WeatherDescriptions</name>
+    <name>WeatherResourceManager</name>
     <message>
         <location filename="../RinWeather/tr_sources.py" line="7"/>
         <source>Sunny</source>
