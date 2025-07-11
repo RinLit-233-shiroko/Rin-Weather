@@ -108,7 +108,7 @@ jobs:
 
       - name: Generate CHANGELOG.md
         run: |
-          git cliff --tag "${{ github.ref_name }}" > CHANGELOG.md
+          git cliff --tag "${{ github.ref_name }}" --config .git-cliff.toml > CHANGELOG.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -116,7 +116,7 @@ jobs:
           name: ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
           body_path: CHANGELOG.md
-          draft: true  # 你可以改成 false 来直接发布
+          draft: true
           files: |
             dist/RinWeather-Windows.zip
             dist/RinWeather-macOS.zip
